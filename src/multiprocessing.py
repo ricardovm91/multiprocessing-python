@@ -26,8 +26,9 @@ if __name__ == '__main__':
 
     fullDataSource = pd.read_csv(f'PATH-TO-YOUR-DATA-SOURCE')
 
-    #Select the piece of dictionar for this agent
+    #Select the piece of dictionary for this agent
     divisionSize = math.ceil(len(fullDataSource['A-COLUMN']) / totalSwarm)
+    
     lowerLimit = (agentId - 1) * divisionSize
     if(agentId != totalSwarm):
         upperLimit = lowerLimit + divisionSize - 1
@@ -35,16 +36,13 @@ if __name__ == '__main__':
         upperLimit = len(fullDataSource['A-COLUMN']) - 1
 
     agentDivision = fullDataSource.loc[lowerLimit:upperLimit]
-    
     logging.info(f'lower: {lowerLimit}, upper: {upperLimit}')
 
     #Run resulting dictionary divided in every core.
     availableCores = multiprocessing.cpu_count()
-    #availableCores = 32
     logging.info (f'cores: {availableCores}')
 
     divisionLength = len(agentDivision['A-COLUMN'])
-    #divisionLength = 20
     chunkSize = math.ceil(divisionLength / availableCores)
 
     processList = []
@@ -60,8 +58,10 @@ if __name__ == '__main__':
             #last core
             upperBound = upperLimit
         
-        # logging.info(f'lower: {lowerBound}, upper: {upperBound}')
+        logging.info(f'lower: {lowerBound}, upper: {upperBound}')
         dataChunk = agentDivision.loc[lowerBound:upperBound]
+
+        #trigger new process
         newProcess = multiprocessing.Process(target=processChunk, args=(dataChunk, factor, agentId,))
         processList.append(newProcess)
         newProcess.start()
