@@ -31,8 +31,10 @@ if __name__ == '__main__':
     
     lowerLimit = (agentId - 1) * divisionSize
     if(agentId != totalSwarm):
+        #every agent
         upperLimit = lowerLimit + divisionSize - 1
     else:
+        #last agent
         upperLimit = len(fullDataSource['A-COLUMN']) - 1
 
     agentDivision = fullDataSource.loc[lowerLimit:upperLimit]
